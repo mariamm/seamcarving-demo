@@ -3,7 +3,7 @@ import createEngine from "./engine.js";
 let engine;
 
 self.addEventListener("message", async ({ data }) => {
-  const { pixels, width, height, target, includeEnergy } = data;
+  const { pixels, width, height, target } = data;
   try {
     const module = await (engine ??= createEngine());
     const outputLength = target * height * 4;
@@ -17,7 +17,7 @@ self.addEventListener("message", async ({ data }) => {
       };
       const input = allocate(pixels.byteLength);
       const output = allocate(outputLength);
-      const energy = includeEnergy ? allocate(pixels.byteLength) : 0;
+      const energy = allocate(pixels.byteLength);
       module.HEAPU8.set(pixels, input);
       if (!module._resizeHorizontally(input, output, energy, height, width, target)) {
         throw new Error("The target width is invalid.");
@@ -25,8 +25,8 @@ self.addEventListener("message", async ({ data }) => {
 
       // Read the current buffer after the call, since Wasm may grow its memory.
       const carved = module.HEAPU8.slice(output, output + outputLength).buffer;
-      const edges = energy ? module.HEAPU8.slice(energy, energy + pixels.byteLength).buffer : null;
-      self.postMessage({ carved, edges }, edges ? [carved, edges] : [carved]);
+      const edges = module.HEAPU8.slice(energy, energy + pixels.byteLength).buffer;
+      self.postMessage({ carved, edges }, [carved, edges]);
     } finally {
       for (const pointer of pointers) module._free(pointer);
     }

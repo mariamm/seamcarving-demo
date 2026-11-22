@@ -15,7 +15,6 @@ let source;
 let loadVersion = 0;
 let pendingWidth;
 let activeWidth;
-let hasEnergy = false;
 let dragDepth = 0;
 
 function setTargetLabel() {
@@ -40,13 +39,10 @@ function makeWorker() {
     if (data.error) {
       status.textContent = data.error;
     } else {
-      if (data.edges) {
-        drawPixels(energy, data.edges, source.width, source.height);
-        hasEnergy = true;
-        showEnergy.disabled = false;
-      }
       if (pendingWidth === undefined || pendingWidth === width) {
         pendingWidth = undefined;
+        drawPixels(energy, data.edges, source.width, source.height);
+        showEnergy.disabled = false;
         drawPixels(result, data.carved, width, source.height);
         byId("result-size").textContent = `${width} × ${source.height}`;
         download.disabled = false;
@@ -77,7 +73,7 @@ function runCarve() {
     const pixels = source.data.slice();
     worker.postMessage({
       pixels, width: source.width, height: source.height,
-      target: activeWidth, includeEnergy: !hasEnergy,
+      target: activeWidth,
     }, [pixels.buffer]);
   } catch {
     activeWidth = undefined;
@@ -107,7 +103,6 @@ async function loadImage(url, name, isSample = false) {
     worker?.terminate();
     worker = undefined;
     activeWidth = undefined;
-    hasEnergy = false;
     source = { name, width, height, data: pixels.data };
     drawPixels(original, pixels.data.buffer, width, height);
     result.style.removeProperty("--preview-width");
