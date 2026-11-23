@@ -6,14 +6,14 @@
   <meta name="description" content="Resize images by removing low-energy seams. Runs locally in your browser.">
   <title>Seam Carving</title>
   <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./assets-584272b57c70226e/carve.js"></script>
+  <script type="module" src="./assets-8e399ce110c24da4/carve.js"></script>
 </head>
 <body>
   <main id="workspace">
     <header class="intro">
       <div>
         <h1>Seam Carving<span aria-hidden="true">.</span></h1>
-        <p>Shrink the width of a photo while preserving detail. Images stay on your device.</p>
+        <p>Shrink the width or height of a photo while preserving detail. Images stay on your device.</p>
       </div>
       <div class="actions">
         <button id="sample" type="button">Load sample</button>
@@ -23,13 +23,22 @@
 
     <section class="controls" aria-label="Resize controls">
       <div class="target">
-        <label for="size">Target width <output id="target" for="size">—</output></label>
-        <input id="size" type="range" min="1" max="1" value="1" disabled>
+        <label for="width">Target width <output id="width-value" for="width">—</output></label>
+        <input id="width" type="range" min="1" max="1" value="1" disabled>
+      </div>
+      <div class="target">
+        <label for="height">Target height <output id="height-value" for="height">—</output></label>
+        <input id="height" type="range" min="1" max="1" value="1" disabled>
       </div>
       <label class="toggle"><input id="show-energy" type="checkbox" disabled> Show energy map</label>
       <button id="download" class="primary" type="button" disabled>Download PNG</button>
     </section>
 
+    <div class="mask-controls">
+      <button id="paint-mask" type="button" aria-pressed="false" disabled>Protect area</button>
+      <button id="clear-mask" type="button" disabled>Clear mask</button>
+      <span id="mask-hint" hidden>Draw on the original to protect it.</span>
+    </div>
     <p id="status" role="status">Loading sample…</p>
 
     <div class="previews">
@@ -37,7 +46,11 @@
         <figcaption><strong id="source-title">Original</strong><span id="source-size"></span></figcaption>
         <div class="stage">
           <canvas id="original" aria-label="Original image"></canvas>
-          <canvas id="energy" aria-label="Original image energy map with removed seams in red" hidden></canvas>
+          <canvas id="energy" aria-label="Original image energy map with red vertical seams and magenta horizontal seams" hidden></canvas>
+        </div>
+        <div id="seam-key" class="seam-key" hidden>
+          <span><i class="vertical-seam" aria-hidden="true"></i> Vertical seams</span>
+          <span><i class="horizontal-seam" aria-hidden="true"></i> Horizontal seams</span>
         </div>
       </figure>
       <figure>

@@ -58,3 +58,13 @@ figcaption span { color: var(--muted); font-size: 0.9rem; }
 canvas { display: block; width: var(--preview-width, 0%); height: auto; }
 footer { color: var(--muted); font-size: 0.875rem; margin-top: 1rem; }
 @media (max-width: 40rem) { .previews { grid-template-columns: 1fr; } }
+.mask-controls { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+.mask-controls { margin-top: 0.75rem; }
+#mask-hint { font-size: 0.9rem; color: var(--muted); }
+#paint-mask[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+#original.painting { cursor: crosshair; touch-action: none; }
+.seam-key { display: flex; gap: 0.6rem 1rem; flex-wrap: wrap; padding: 0.65rem 1rem; font-size: 0.875rem; }
+.seam-key span { display: inline-flex; gap: 0.4rem; align-items: center; }
+.seam-key i { display: inline-block; width: 0.75rem; height: 0.75rem; border-radius: 0.15rem; }
+.vertical-seam { background: #f00; }
+.horizontal-seam { background: #f0f; }
